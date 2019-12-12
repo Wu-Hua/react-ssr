@@ -7,7 +7,7 @@ import App from '../src/App'
 const app = express()
 
 app.get('/',(req,res)=>{
-  const Page = <App></App>
+  const Page = <App title='kaideba'></App>
   // 个react组件，解析成html
   const content = renderToString(Page)
   res.send(`
