@@ -5,9 +5,9 @@ function App(props) {
   return (
     <div>
       <h1>hello {props.title}! {count}</h1>
-      <button onClick={_ => setCount(count + 1)}>累加</button>
+      <button onClick={() => setCount(count+1)}>累加</button>
     </div>
   )
 }
 
-export default App
+export default <App title='kaikeba'></App>

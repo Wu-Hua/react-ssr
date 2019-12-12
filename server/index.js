@@ -5,11 +5,12 @@ import express from 'express'
 import App from '../src/App'
 
 const app = express()
+app.use(express.static('public'))
 
 app.get('/',(req,res)=>{
-  const Page = <App title='kaideba'></App>
+  // const Page = <App title='kaideba'></App>
   // 个react组件，解析成html
-  const content = renderToString(Page)
+  const content = renderToString(App)
   res.send(`
     <html>
       <head>
@@ -18,6 +19,7 @@ app.get('/',(req,res)=>{
       </head>
       <body>
         <div id='root'>${content}</div>
+        <script src="./bundle.js"></script>
       </body>
     </html>
   `)
