@@ -2,15 +2,21 @@
 import React from 'react'
 import {renderToString} from 'react-dom/server'
 import express from 'express'
+import {StaticRouter} from 'react-router-dom'
 import App from '../src/App'
 
 const app = express()
 app.use(express.static('public'))
 
-app.get('/',(req,res)=>{
+app.get('*',(req,res)=>{
+
   // const Page = <App title='kaideba'></App>
   // 个react组件，解析成html
-  const content = renderToString(App)
+  const content = renderToString(
+    <StaticRouter location={req.url}>
+      {App}
+    </StaticRouter>
+  )
   res.send(`
     <html>
       <head>
