@@ -2,11 +2,13 @@
 import React from 'react'
 import { renderToString } from 'react-dom/server'
 import express from 'express'
-import { StaticRouter, matchPath } from 'react-router-dom'
+import { StaticRouter, matchPath, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
-import store from '../src/store/store'
+import { getServerStore } from '../src/store/store'
 import routes from '../src/App'
-import { rootCertificates } from 'tls'
+import Header from '../src/component/Header'
+
+const store = getServerStore()
 
 const app = express()
 app.use(express.static('public'))
@@ -17,27 +19,27 @@ app.get('*', (req, res) => {
   // inside a request
   // 这个数组来存储所有网络请求
   const promises = []
-  // use `som` to imitate `<Switch>` behavior of selecting only
-  // the first to match
   // 所有的routes通过 ../src/App import 过来的
   routes.some(route => {
     // 通过当前 match 来判断当前是否匹配
     const match = matchPath(req.path, route)
     if (match) {
-      const { loadData } = route.component.loadData
+      const { loadData } = route.component
       // 如果 loadData 存在，说明当前的组件需要异步获取数据
       if (loadData) {
         promises.push(loadData(store))
       }
     }
   })
+
   // 等待所有网络请求结束再渲染
   Promise.all(promises).then(() => {
     // 个react组件，解析成html
     const content = renderToString(
       <Provider store={store}>
         <StaticRouter location={req.url}>
-          {routes.map(route=><Routes {...route}></Routes>)}
+          <Header></Header>
+          {routes.map(route => <Route {...route}></Route>)}
         </StaticRouter>
       </Provider>
     )
@@ -50,17 +52,13 @@ app.get('*', (req, res) => {
         <body>
           <div id='root'>${content}</div>
           <script>
-            window.__context = ${}
+            window.__context = ${JSON.stringify(store.getState())}
           </script>
           <script src="./bundle.js"></script>
         </body>
       </html>
     `)
   })
-
-
-
-
 })
 
 app.listen(8080, _ => {

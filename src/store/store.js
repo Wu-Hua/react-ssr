@@ -21,5 +21,6 @@ export const getClientStore = ()=>{
 
 export const getServerStore = () => {
   // 服务端用
+  // 通过server的dispatch来获取和充实
   return createStore(reducer, applyMiddleware(thunk))
 }

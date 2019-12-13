@@ -17,13 +17,13 @@ export default [
     path: '/',
     component: Index,
     // loadData: Index.loadData,
-    excet: true,
+    exact: true,
     key: 'index'
   },
   {
     path: '/about',
     component: About,
-    excet: true,
+    exact: true,
     key: 'about'
   },
 ]
