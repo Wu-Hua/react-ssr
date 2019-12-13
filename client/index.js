@@ -4,6 +4,7 @@ import { BrowserRouter, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
 import routes from '../src/App'
 import { getClientStore } from '../src/store/store'
+import Header from '../src/component/Header'
 
 // 注水 客户端入口
 const Page = (
