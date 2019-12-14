@@ -58,6 +58,8 @@ app.get('*', (req, res) => {
         </body>
       </html>
     `)
+  }).catch(()=>{
+    res.send('报错页面500')
   })
 })
 
