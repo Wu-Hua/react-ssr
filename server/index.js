@@ -11,7 +11,22 @@ import Header from '../src/component/Header'
 const store = getServerStore()
 
 const app = express()
+//设置服务器静态资源目录
 app.use(express.static('public'))
+
+
+/**
+ * 包裹一层 promise 捕获异常，这样 promise.all 就不会接收到异常
+ */
+const promiseWrapper = (promiseFunc) => {
+  return new Promise((resolve, reject) => {
+    resolve(promiseFunc)
+  }).then(res => {
+    console.log(res)
+  }).catch(err => {
+    console.log(err)
+  })
+}
 
 app.get('*', (req, res) => {
   // 获取根据路由渲染出的组件，并且拿到loadData方法 获取数据
@@ -33,7 +48,7 @@ app.get('*', (req, res) => {
   })
 
   // 等待所有网络请求结束再渲染
-  Promise.all(promises).then(() => {
+  Promise.all(promises.map(promis => { return promiseWrapper(promis) })).then(() => {
     // 个react组件，解析成html
     const content = renderToString(
       <Provider store={store}>
@@ -58,11 +73,11 @@ app.get('*', (req, res) => {
         </body>
       </html>
     `)
-  }).catch(()=>{
+  }).catch(() => {
     res.send('报错页面500')
   })
 })
 
 app.listen(8080, _ => {
-  console.log('监听完毕')
+  console.log('App is listenning at port:8080')
 })

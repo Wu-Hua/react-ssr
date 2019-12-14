@@ -35,5 +35,5 @@ app.get('/api/course/list',(req,res)=>{
 })
 
 app.listen(9090,_=>{
-  console.log('mock加载完毕')
+  console.log('mock port:9090')
 })
