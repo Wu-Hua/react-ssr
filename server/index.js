@@ -4,6 +4,7 @@ import { renderToString } from 'react-dom/server'
 import express from 'express'
 import { StaticRouter, matchPath, Route } from 'react-router-dom'
 import { Provider } from 'react-redux'
+import proxy from 'http-proxy-middleware'
 import { getServerStore } from '../src/store/store'
 import routes from '../src/App'
 import Header from '../src/component/Header'
@@ -29,8 +30,17 @@ app.use(express.static('public'))
 //   })
 // }
 
+// 客户端来的api开头的请求
+app.use(
+  '/api',
+  proxy({ target: 'http://localhost:9090/', changeOrigin: true })
+)
 app.get('*', (req, res) => {
   // 获取根据路由渲染出的组件，并且拿到loadData方法 获取数据
+
+  // if(req.url.startsWith('/api/')) {
+  //   // 不渲染页面，使用axios转发 axios.get
+  // }
 
   // inside a request
   // 这个数组来存储所有网络请求
@@ -46,18 +56,19 @@ app.get('*', (req, res) => {
         // 包装后
         // 第一种用 promise 包装一层，
         // 规避报错 可以考虑加日志
-        // const promise = new Promise((resolve,reject)=>{
-        //   loadData(store).then(resolve).catch(resolve)
-        // })
-        // promises.push(promise)
+        const promise = new Promise((resolve,reject)=>{
+          loadData(store).then(resolve).catch(resolve)
+        })
+        promises.push(promise)
         // 第二种 
-        promises.push(loadData(store))
+        // promises.push(loadData(store))
+        // Promise.allSettled(promises).then(()=>{})
       }
     }
   })
 
   // 等待所有网络请求结束再渲染
-  Promise.allSettled(promises).then(() => {
+  Promise.all(promises).then(() => {
     // 个react组件，解析成html
     const content = renderToString(
       <Provider store={store}>
