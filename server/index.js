@@ -16,17 +16,18 @@ app.use(express.static('public'))
 
 
 /**
+ * 第一道作业题
  * 包裹一层 promise 捕获异常，这样 promise.all 就不会接收到异常
  */
-const promiseWrapper = (promiseFunc) => {
-  return new Promise((resolve, reject) => {
-    resolve(promiseFunc)
-  }).then(res => {
-    console.log(res)
-  }).catch(err => {
-    console.log(err)
-  })
-}
+// const promiseWrapper = (promiseFunc) => {
+//   return new Promise((resolve, reject) => {
+//     resolve(promiseFunc)
+//   }).then(res => {
+//     console.log(res)
+//   }).catch(err => {
+//     console.log(err)
+//   })
+// }
 
 app.get('*', (req, res) => {
   // 获取根据路由渲染出的组件，并且拿到loadData方法 获取数据
@@ -42,13 +43,21 @@ app.get('*', (req, res) => {
       const { loadData } = route.component
       // 如果 loadData 存在，说明当前的组件需要异步获取数据
       if (loadData) {
+        // 包装后
+        // 第一种用 promise 包装一层，
+        // 规避报错 可以考虑加日志
+        // const promise = new Promise((resolve,reject)=>{
+        //   loadData(store).then(resolve).catch(resolve)
+        // })
+        // promises.push(promise)
+        // 第二种 
         promises.push(loadData(store))
       }
     }
   })
 
   // 等待所有网络请求结束再渲染
-  Promise.all(promises.map(promis => { return promiseWrapper(promis) })).then(() => {
+  Promise.allSettled(promises).then(() => {
     // 个react组件，解析成html
     const content = renderToString(
       <Provider store={store}>

@@ -18,7 +18,7 @@ app.get('/api/user/info',(req,res)=>{
 })
 
 
-app.get('/api/course/list',(req,res)=>{
+app.get('/api/course/list1',(req,res)=>{
   // 支持跨域调用
   res.header('Access-Control-Allow-Origin','*')
   res.header('Access-Control-Allow-Methods','GET,POST,PUT')
@@ -30,7 +30,7 @@ app.get('/api/course/list',(req,res)=>{
       {name: 'js高级',id: 2},
       {name: 'web全栈',id: 3},
       {name: 'java架构师',id: 4}
-    ]
+    ] 
   })
 })
 

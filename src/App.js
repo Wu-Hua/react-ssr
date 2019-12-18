@@ -19,7 +19,14 @@ export default [
     component: Index,
     // loadData: Index.loadData,
     // exact: true,
-    key: 'index'
+    key: 'index',
+    // 嵌套路由
+    // routes: [{
+      // path: '/user',
+      // component: User,
+      // exact: true,
+      // key: 'user'
+    // }]
   },
   {
     path: '/about',
